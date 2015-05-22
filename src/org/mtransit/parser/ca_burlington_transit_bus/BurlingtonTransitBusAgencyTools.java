@@ -10,6 +10,7 @@ import org.mtransit.parser.Utils;
 import org.mtransit.parser.gtfs.data.GCalendar;
 import org.mtransit.parser.gtfs.data.GCalendarDate;
 import org.mtransit.parser.gtfs.data.GRoute;
+import org.mtransit.parser.gtfs.data.GSpec;
 import org.mtransit.parser.gtfs.data.GStop;
 import org.mtransit.parser.gtfs.data.GTrip;
 import org.mtransit.parser.mt.data.MAgency;
@@ -110,74 +111,74 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String BURLINGTON = "Burlington";
 
 	@Override
-	public void setTripHeadsign(MRoute route, MTrip mTrip, GTrip gTrip) {
+	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
 		int directionId = gTrip.direction_id;
 		String stationName = cleanTripHeadsign(gTrip.trip_headsign);
-		if (route.id == 4l) {
+		if (mRoute.id == 4l) {
 			if (directionId == 1) {
 				stationName = APPLEBY_GO;
 			}
-		} else if (route.id == 12l) {
+		} else if (mRoute.id == 12l) {
 			if (SUTTON.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 24012l) { // 12X
+		} else if (mRoute.id == 24012l) { // 12X
 			if (SUTTON.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 21l) {
+		} else if (mRoute.id == 21l) {
 			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 25l) {
+		} else if (mRoute.id == 25l) {
 			if (_407_CARPOOL.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 48l) {
+		} else if (mRoute.id == 48l) {
 			if (SUTTON.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 50l) {
+		} else if (mRoute.id == 50l) {
 			if (stationName.startsWith(BURLINGTON)) {
 				stationName = stationName.substring(BURLINGTON.length() + 1);
 			}
-		} else if (route.id == 51l) {
+		} else if (mRoute.id == 51l) {
 			if (stationName.startsWith(BURLINGTON)) {
 				stationName = stationName.substring(BURLINGTON.length() + 1);
 			}
-		} else if (route.id == 52l) {
+		} else if (mRoute.id == 52l) {
 			if (stationName.startsWith(BURLINGTON)) {
 				stationName = stationName.substring(BURLINGTON.length() + 1);
 			}
-		} else if (route.id == 80l) {
+		} else if (mRoute.id == 80l) {
 			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 81l) {
+		} else if (mRoute.id == 81l) {
 			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
 				directionId = 0;
 			} else {
 				directionId = 1;
 			}
-		} else if (route.id == 87l) {
+		} else if (mRoute.id == 87l) {
 			if (BURLINGTON_GO.equalsIgnoreCase(stationName)) {
 				directionId = 1;
 			} else {
 				directionId = 0;
 			}
-		} else if (route.id == 101l) {
+		} else if (mRoute.id == 101l) {
 			if (HAMILTON.equalsIgnoreCase(stationName)) {
 				directionId = 1;
 			} else {
