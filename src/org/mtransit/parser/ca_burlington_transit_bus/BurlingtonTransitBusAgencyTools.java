@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mtransit.parser.DefaultAgencyTools;
 import org.mtransit.parser.Utils;
 import org.mtransit.parser.gtfs.data.GCalendar;
@@ -74,6 +75,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	private static final Pattern DIGITS = Pattern.compile("[\\d]+");
 
+	private static final String A = "A";
+	private static final String B = "B";
+	private static final String X = "X";
+
 	@Override
 	public long getRouteId(GRoute gRoute) {
 		String routeId = gRoute.route_id;
@@ -83,11 +88,11 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 		Matcher matcher = DIGITS.matcher(routeId);
 		matcher.find();
 		int digits = Integer.parseInt(matcher.group());
-		if (routeId.endsWith("A")) {
+		if (routeId.endsWith(A)) {
 			return 1000 + digits;
-		} else if (routeId.endsWith("B")) {
+		} else if (routeId.endsWith(B)) {
 			return 2000 + digits;
-		} else if (routeId.endsWith("X")) {
+		} else if (routeId.endsWith(X)) {
 			return 24000 + digits;
 		} else {
 			System.out.println("Can't find route ID for " + gRoute);
@@ -104,99 +109,191 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	}
 
 	private static final String APPLEBY_GO = "Appleby Go";
+	private static final String APPLEBY_GO = "Appleby GO";
+	private static final String APPLEBY_GO_LC = "appleby go";
 	private static final String HAMILTON = "Hamilton";
+	private static final String HAMILTON_LC = "hamilton";
 	private static final String SUTTON = "Sutton";
+	private static final String SUTTON_LC = "sutton";
 	private static final String _407_CARPOOL = "407 Carpool";
-	private static final String BURLINGTON_GO = "Burlington Go";
-	private static final String BURLINGTON = "Burlington";
+	private static final String _407_CARPOOL_LC = "407 carpool";
+	private static final String BURLINGTON_GO = "Burlington GO";
+	private static final String BURLINGTON_GO_LC = "burlington go";
+	// private static final String BURLINGTON = "Burlington";
+	private static final String LAKESHORE_PL = "Lakeshore Pl";
+	private static final String TANSLEY_WOODS_CC = "Tansley Woods CC";
+	private static final String SENIORS_CTR = "Seniors Ctr";
+	private static final String LA_SALLE_TOWERS = "LaSalle Towers";
+	private static final String TIM_DOBBIE_LC = "tim dobbie";
+	private static final String TIM_DOBBIE = "Tim Dobbie";
+	private static final String ALDERSHOT_GO_LC = "aldershot go";
+	private static final String ALDERSHOT_GO = "Aldershot GO";
+	private static final String NORTHWEST_LC = "northwest";
+	private static final String NORTHWEST = "Northwest";
+	private static final String NORTHEAST = "Northeast";
+	private static final String NORTHEAST_LC = "northeast";
+	private static final String SOUTH = "South";
+	private static final String SOUTH_LC = "south";
 
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
-		int directionId = gTrip.direction_id;
-		String stationName = cleanTripHeadsign(gTrip.trip_headsign);
-		if (mRoute.id == 4l) {
-			if (directionId == 1) {
-				stationName = APPLEBY_GO;
+		String tripHeadsignLC = gTrip.trip_headsign.toLowerCase(Locale.ENGLISH);
+		if (mRoute.id == 12l) {
+			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
+				mTrip.setHeadsignString(SUTTON, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
-		} else if (mRoute.id == 12l) {
-			if (SUTTON.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
-			}
+			System.out.println("Unexpected 12 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 24012l) { // 12X
-			if (SUTTON.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
+				mTrip.setHeadsignString(SUTTON, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected 12X trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 21l) {
-			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
+				mTrip.setHeadsignString(APPLEBY_GO, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected 21 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 25l) {
-			if (_407_CARPOOL.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(_407_CARPOOL_LC)) {
+				mTrip.setHeadsignString(_407_CARPOOL, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected 25 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 48l) {
-			if (SUTTON.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
+				mTrip.setHeadsignString(SUTTON, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(TIM_DOBBIE_LC)) {
+				mTrip.setHeadsignString(TIM_DOBBIE, 1);
+				return;
 			}
+			System.out.println("Unexpected 48 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 50l) {
-			if (stationName.startsWith(BURLINGTON)) {
-				stationName = stationName.substring(BURLINGTON.length() + 1);
+			if (tripHeadsignLC.endsWith(SOUTH_LC)) {
+				mTrip.setHeadsignString(SOUTH, 0);
+				return;
 			}
+			System.out.println("Unexpected 50 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 51l) {
-			if (stationName.startsWith(BURLINGTON)) {
-				stationName = stationName.substring(BURLINGTON.length() + 1);
+			if (tripHeadsignLC.endsWith(NORTHEAST_LC)) {
+				mTrip.setHeadsignString(NORTHEAST, 0);
+				return;
 			}
+			System.out.println("Unexpected 51 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 52l) {
-			if (stationName.startsWith(BURLINGTON)) {
-				stationName = stationName.substring(BURLINGTON.length() + 1);
+			if (tripHeadsignLC.endsWith(NORTHWEST_LC)) {
+				mTrip.setHeadsignString(NORTHWEST, 0);
+				return;
 			}
+			System.out.println("Unexpected 52 trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 80l) {
-			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
+				mTrip.setHeadsignString(APPLEBY_GO, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 81l) {
-			if (APPLEBY_GO.equalsIgnoreCase(stationName)) {
-				directionId = 0;
-			} else {
-				directionId = 1;
+			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
+				mTrip.setHeadsignString(APPLEBY_GO, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 87l) {
-			if (BURLINGTON_GO.equalsIgnoreCase(stationName)) {
-				directionId = 1;
-			} else {
-				directionId = 0;
+			if (tripHeadsignLC.endsWith(ALDERSHOT_GO_LC)) {
+				mTrip.setHeadsignString(ALDERSHOT_GO, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 1);
+				return;
 			}
+			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.exit(-1);
+			return;
 		} else if (mRoute.id == 101l) {
-			if (HAMILTON.equalsIgnoreCase(stationName)) {
-				directionId = 1;
-			} else {
-				directionId = 0;
+			if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
+				mTrip.setHeadsignString(BURLINGTON_GO, 0);
+				return;
+			} else if (tripHeadsignLC.endsWith(HAMILTON_LC)) {
+				mTrip.setHeadsignString(HAMILTON, 1);
+				return;
+			}
+			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.exit(-1);
+			return;
+		} else if (mRoute.id == 300l) {
+			if (gTrip.direction_id == 0) { // East
+				mTrip.setHeadsignString(LA_SALLE_TOWERS, gTrip.direction_id);
+				return;
+			} else if (gTrip.direction_id == 1) { // West
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+				return;
+			}
+		} else if (mRoute.id == 301l) {
+			if (gTrip.direction_id == 0) { // West
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+				return;
+			} else if (gTrip.direction_id == 1) { // East
+				mTrip.setHeadsignString(LAKESHORE_PL, gTrip.direction_id);
+				return;
+			}
+		} else if (mRoute.id == 302l) {
+			if (gTrip.direction_id == 0) { // North
+				mTrip.setHeadsignString(TANSLEY_WOODS_CC, gTrip.direction_id);
+				return;
+			} else if (gTrip.direction_id == 1) { // South
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+				return;
 			}
 		}
-		mTrip.setHeadsignString(stationName, directionId);
+		mTrip.setHeadsignString(cleanTripHeadsign(gTrip.trip_headsign), gTrip.direction_id);
 	}
 
-	private static final String DASH_TO = " - to ";
+	private static final Pattern RLN_DASH_BOUNDS_TO = Pattern.compile("(^([^\\-]*\\- )+(east |west |north |south )?to )", Pattern.CASE_INSENSITIVE);
 
 	@Override
 	public String cleanTripHeadsign(String tripHeadsign) {
-		tripHeadsign = tripHeadsign.toLowerCase(Locale.ENGLISH);
-		int indexOfTO = tripHeadsign.toLowerCase(Locale.ENGLISH).indexOf(DASH_TO);
-		if (indexOfTO >= 0) {
-			tripHeadsign = tripHeadsign.substring(indexOfTO + DASH_TO.length());
-		}
+		tripHeadsign = RLN_DASH_BOUNDS_TO.matcher(tripHeadsign).replaceAll(StringUtils.EMPTY);
 		return MSpec.cleanLabel(tripHeadsign);
 	}
 
