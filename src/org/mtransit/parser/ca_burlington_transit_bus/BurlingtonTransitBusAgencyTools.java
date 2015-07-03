@@ -108,7 +108,6 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 		return AGENCY_COLOR;
 	}
 
-	private static final String APPLEBY_GO = "Appleby Go";
 	private static final String APPLEBY_GO = "Appleby GO";
 	private static final String APPLEBY_GO_LC = "appleby go";
 	private static final String HAMILTON = "Hamilton";
