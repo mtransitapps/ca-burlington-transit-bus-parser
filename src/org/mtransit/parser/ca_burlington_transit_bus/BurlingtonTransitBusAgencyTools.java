@@ -81,7 +81,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
-		String routeId = gRoute.route_id;
+		String routeId = gRoute.getRouteId();
 		if (routeId != null && routeId.length() > 0 && Utils.isDigitsOnly(routeId)) {
 			return Integer.valueOf(routeId); // using stop code as stop ID
 		}
@@ -136,7 +136,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
-		String tripHeadsignLC = gTrip.trip_headsign.toLowerCase(Locale.ENGLISH);
+		String tripHeadsignLC = gTrip.getTripHeadsign().toLowerCase(Locale.ENGLISH);
 		if (mRoute.id == 12l) {
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
 				mTrip.setHeadsignString(SUTTON, 0);
@@ -261,31 +261,31 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.exit(-1);
 			return;
 		} else if (mRoute.id == 300l) {
-			if (gTrip.direction_id == 0) { // East
-				mTrip.setHeadsignString(LA_SALLE_TOWERS, gTrip.direction_id);
+			if (gTrip.getDirectionId() == 0) { // East
+				mTrip.setHeadsignString(LA_SALLE_TOWERS, gTrip.getDirectionId());
 				return;
-			} else if (gTrip.direction_id == 1) { // West
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+			} else if (gTrip.getDirectionId() == 1) { // West
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
 				return;
 			}
 		} else if (mRoute.id == 301l) {
-			if (gTrip.direction_id == 0) { // West
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+			if (gTrip.getDirectionId() == 0) { // West
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
 				return;
-			} else if (gTrip.direction_id == 1) { // East
-				mTrip.setHeadsignString(LAKESHORE_PL, gTrip.direction_id);
+			} else if (gTrip.getDirectionId() == 1) { // East
+				mTrip.setHeadsignString(LAKESHORE_PL, gTrip.getDirectionId());
 				return;
 			}
 		} else if (mRoute.id == 302l) {
-			if (gTrip.direction_id == 0) { // North
-				mTrip.setHeadsignString(TANSLEY_WOODS_CC, gTrip.direction_id);
+			if (gTrip.getDirectionId() == 0) { // North
+				mTrip.setHeadsignString(TANSLEY_WOODS_CC, gTrip.getDirectionId());
 				return;
-			} else if (gTrip.direction_id == 1) { // South
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.direction_id);
+			} else if (gTrip.getDirectionId() == 1) { // South
+				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
 				return;
 			}
 		}
-		mTrip.setHeadsignString(cleanTripHeadsign(gTrip.trip_headsign), gTrip.direction_id);
+		mTrip.setHeadsignString(cleanTripHeadsign(gTrip.getTripHeadsign()), gTrip.getDirectionId());
 	}
 
 	private static final Pattern RLN_DASH_BOUNDS_TO = Pattern.compile("(^([^\\-]*\\- )+(east |west |north |south )?to )", Pattern.CASE_INSENSITIVE);
@@ -309,7 +309,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public int getStopId(GStop gStop) {
-		String stopId = gStop.stop_id;
+		String stopId = gStop.getStopId();
 		if (stopId != null && stopId.length() > 0 && Utils.isDigitsOnly(stopId)) {
 			return Integer.valueOf(stopId);
 		}
