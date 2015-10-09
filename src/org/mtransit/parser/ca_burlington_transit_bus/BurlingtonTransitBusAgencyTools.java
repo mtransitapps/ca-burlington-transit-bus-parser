@@ -137,7 +137,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
 		String tripHeadsignLC = gTrip.getTripHeadsign().toLowerCase(Locale.ENGLISH);
-		if (mRoute.id == 12l) {
+		if (mRoute.getId() == 12l) {
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
 				mTrip.setHeadsignString(SUTTON, 0);
 				return;
@@ -148,7 +148,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 12 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 24012l) { // 12X
+		} else if (mRoute.getId() == 24012l) { // 12X
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
 				mTrip.setHeadsignString(SUTTON, 0);
 				return;
@@ -159,7 +159,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 12X trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 21l) {
+		} else if (mRoute.getId() == 21l) {
 			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
 				mTrip.setHeadsignString(APPLEBY_GO, 0);
 				return;
@@ -170,7 +170,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 21 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 25l) {
+		} else if (mRoute.getId() == 25l) {
 			if (tripHeadsignLC.endsWith(_407_CARPOOL_LC)) {
 				mTrip.setHeadsignString(_407_CARPOOL, 0);
 				return;
@@ -181,7 +181,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 25 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 48l) {
+		} else if (mRoute.getId() == 48l) {
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
 				mTrip.setHeadsignString(SUTTON, 0);
 				return;
@@ -192,7 +192,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 48 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 50l) {
+		} else if (mRoute.getId() == 50l) {
 			if (tripHeadsignLC.endsWith(SOUTH_LC)) {
 				mTrip.setHeadsignString(SOUTH, 0);
 				return;
@@ -200,7 +200,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 50 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 51l) {
+		} else if (mRoute.getId() == 51l) {
 			if (tripHeadsignLC.endsWith(NORTHEAST_LC)) {
 				mTrip.setHeadsignString(NORTHEAST, 0);
 				return;
@@ -208,7 +208,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 51 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 52l) {
+		} else if (mRoute.getId() == 52l) {
 			if (tripHeadsignLC.endsWith(NORTHWEST_LC)) {
 				mTrip.setHeadsignString(NORTHWEST, 0);
 				return;
@@ -216,7 +216,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected 52 trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 80l) {
+		} else if (mRoute.getId() == 80l) {
 			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
 				mTrip.setHeadsignString(APPLEBY_GO, 0);
 				return;
@@ -224,10 +224,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(BURLINGTON_GO, 1);
 				return;
 			}
-			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.out.println("Unexpected " + mRoute.getId() + " trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 81l) {
+		} else if (mRoute.getId() == 81l) {
 			if (tripHeadsignLC.endsWith(APPLEBY_GO_LC)) {
 				mTrip.setHeadsignString(APPLEBY_GO, 0);
 				return;
@@ -235,10 +235,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(BURLINGTON_GO, 1);
 				return;
 			}
-			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.out.println("Unexpected " + mRoute.getId() + " trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 87l) {
+		} else if (mRoute.getId() == 87l) {
 			if (tripHeadsignLC.endsWith(ALDERSHOT_GO_LC)) {
 				mTrip.setHeadsignString(ALDERSHOT_GO, 0);
 				return;
@@ -246,10 +246,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(BURLINGTON_GO, 1);
 				return;
 			}
-			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.out.println("Unexpected " + mRoute.getId() + " trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 101l) {
+		} else if (mRoute.getId() == 101l) {
 			if (tripHeadsignLC.endsWith(BURLINGTON_GO_LC)) {
 				mTrip.setHeadsignString(BURLINGTON_GO, 0);
 				return;
@@ -257,10 +257,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(HAMILTON, 1);
 				return;
 			}
-			System.out.println("Unexpected " + mRoute.id + " trip " + gTrip);
+			System.out.println("Unexpected " + mRoute.getId() + " trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.id == 300l) {
+		} else if (mRoute.getId() == 300l) {
 			if (gTrip.getDirectionId() == 0) { // East
 				mTrip.setHeadsignString(LA_SALLE_TOWERS, gTrip.getDirectionId());
 				return;
@@ -268,7 +268,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
 				return;
 			}
-		} else if (mRoute.id == 301l) {
+		} else if (mRoute.getId() == 301l) {
 			if (gTrip.getDirectionId() == 0) { // West
 				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
 				return;
@@ -276,7 +276,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(LAKESHORE_PL, gTrip.getDirectionId());
 				return;
 			}
-		} else if (mRoute.id == 302l) {
+		} else if (mRoute.getId() == 302l) {
 			if (gTrip.getDirectionId() == 0) { // North
 				mTrip.setHeadsignString(TANSLEY_WOODS_CC, gTrip.getDirectionId());
 				return;
