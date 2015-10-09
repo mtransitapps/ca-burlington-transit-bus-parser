@@ -292,16 +292,17 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String cleanTripHeadsign(String tripHeadsign) {
+		if (Utils.isUppercaseOnly(tripHeadsign, true, true)) {
+			tripHeadsign = tripHeadsign.toLowerCase(Locale.ENGLISH);
+		}
+		tripHeadsign = CleanUtils.CLEAN_AT.matcher(tripHeadsign).replaceAll(CleanUtils.CLEAN_AT_REPLACEMENT);
 		tripHeadsign = RLN_DASH_BOUNDS_TO.matcher(tripHeadsign).replaceAll(StringUtils.EMPTY);
 		return CleanUtils.cleanLabel(tripHeadsign);
 	}
 
-	private static final Pattern AT = Pattern.compile("( at )", Pattern.CASE_INSENSITIVE);
-	private static final String AT_REPLACEMENT = " / ";
-
 	@Override
 	public String cleanStopName(String gStopName) {
-		gStopName = AT.matcher(gStopName).replaceAll(AT_REPLACEMENT);
+		gStopName = CleanUtils.CLEAN_AT.matcher(gStopName).replaceAll(CleanUtils.CLEAN_AT_REPLACEMENT);
 		gStopName = CleanUtils.cleanNumbers(gStopName);
 		gStopName = gStopName.toLowerCase(Locale.ENGLISH);
 		return CleanUtils.cleanLabel(gStopName);
