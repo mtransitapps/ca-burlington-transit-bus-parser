@@ -1,12 +1,19 @@
 package org.mtransit.parser.ca_burlington_transit_bus;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.mtransit.parser.CleanUtils;
 import org.mtransit.parser.DefaultAgencyTools;
+import org.mtransit.parser.Pair;
+import org.mtransit.parser.SplitUtils;
+import org.mtransit.parser.SplitUtils.RouteTripSpec;
 import org.mtransit.parser.Utils;
 import org.mtransit.parser.gtfs.data.GCalendar;
 import org.mtransit.parser.gtfs.data.GCalendarDate;
@@ -14,10 +21,11 @@ import org.mtransit.parser.gtfs.data.GRoute;
 import org.mtransit.parser.gtfs.data.GSpec;
 import org.mtransit.parser.gtfs.data.GStop;
 import org.mtransit.parser.gtfs.data.GTrip;
+import org.mtransit.parser.gtfs.data.GTripStop;
 import org.mtransit.parser.mt.data.MAgency;
 import org.mtransit.parser.mt.data.MRoute;
-import org.mtransit.parser.CleanUtils;
 import org.mtransit.parser.mt.data.MTrip;
+import org.mtransit.parser.mt.data.MTripStop;
 
 // http://www.burlington.ca/en/services-for-you/Open-Data-Catalogue.asp
 // http://www.burlington.ca/en/services-for-you/resources/Ongoing_Projects/Open_Data/Catalogue/GTFS_Data.zip
@@ -79,6 +87,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String B = "B";
 	private static final String X = "X";
 
+	private static final long RID_ENDS_WITH_A = 1000l;
+	private static final long RID_ENDS_WITH_B = 2000l;
+	private static final long RID_ENDS_WITH_X = 24000l;
+
 	@Override
 	public long getRouteId(GRoute gRoute) {
 		String routeId = gRoute.getRouteId();
@@ -86,19 +98,19 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			return Integer.valueOf(routeId); // using stop code as stop ID
 		}
 		Matcher matcher = DIGITS.matcher(routeId);
-		matcher.find();
-		int digits = Integer.parseInt(matcher.group());
-		if (routeId.endsWith(A)) {
-			return 1000 + digits;
-		} else if (routeId.endsWith(B)) {
-			return 2000 + digits;
-		} else if (routeId.endsWith(X)) {
-			return 24000 + digits;
-		} else {
-			System.out.println("Can't find route ID for " + gRoute);
-			System.exit(-1);
-			return -1;
+		if (matcher.find()) {
+			int digits = Integer.parseInt(matcher.group());
+			if (routeId.endsWith(A)) {
+				return RID_ENDS_WITH_A + digits;
+			} else if (routeId.endsWith(B)) {
+				return RID_ENDS_WITH_B + digits;
+			} else if (routeId.endsWith(X)) {
+				return RID_ENDS_WITH_X + digits;
+			}
 		}
+		System.out.printf("\nCan't find route ID for %s!\n", gRoute);
+		System.exit(-1);
+		return -1l;
 	}
 
 	private static final String AGENCY_COLOR = "006184"; // BLUE
@@ -119,10 +131,6 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String BURLINGTON_GO = "Burlington GO";
 	private static final String BURLINGTON_GO_LC = "burlington go";
 	// private static final String BURLINGTON = "Burlington";
-	private static final String LAKESHORE_PL = "Lakeshore Pl";
-	private static final String TANSLEY_WOODS_CC = "Tansley Woods CC";
-	private static final String SENIORS_CTR = "Seniors Ctr";
-	private static final String LA_SALLE_TOWERS = "LaSalle Towers";
 	private static final String TIM_DOBBIE_LC = "tim dobbie";
 	private static final String TIM_DOBBIE = "Tim Dobbie";
 	private static final String ALDERSHOT_GO_LC = "aldershot go";
@@ -134,8 +142,41 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String SOUTH = "South";
 	private static final String SOUTH_LC = "south";
 
+	private static HashMap<Long, RouteTripSpec> ALL_ROUTE_TRIPS2;
+	static {
+		HashMap<Long, RouteTripSpec> map2 = new HashMap<Long, RouteTripSpec>();
+		ALL_ROUTE_TRIPS2 = map2;
+	}
+
+	@Override
+	public int compareEarly(long routeId, List<MTripStop> list1, List<MTripStop> list2, MTripStop ts1, MTripStop ts2, GStop ts1GStop, GStop ts2GStop) {
+		if (ALL_ROUTE_TRIPS2.containsKey(routeId)) {
+			return ALL_ROUTE_TRIPS2.get(routeId).compare(routeId, list1, list2, ts1, ts2, ts1GStop, ts2GStop);
+		}
+		return super.compareEarly(routeId, list1, list2, ts1, ts2, ts1GStop, ts2GStop);
+	}
+
+	@Override
+	public ArrayList<MTrip> splitTrip(MRoute mRoute, GTrip gTrip, GSpec gtfs) {
+		if (ALL_ROUTE_TRIPS2.containsKey(mRoute.getId())) {
+			return ALL_ROUTE_TRIPS2.get(mRoute.getId()).getAllTrips();
+		}
+		return super.splitTrip(mRoute, gTrip, gtfs);
+	}
+
+	@Override
+	public Pair<Long[], Integer[]> splitTripStop(MRoute mRoute, GTrip gTrip, GTripStop gTripStop, ArrayList<MTrip> splitTrips, GSpec routeGTFS) {
+		if (ALL_ROUTE_TRIPS2.containsKey(mRoute.getId())) {
+			return SplitUtils.splitTripStop(mRoute, gTrip, gTripStop, routeGTFS, ALL_ROUTE_TRIPS2.get(mRoute.getId()));
+		}
+		return super.splitTripStop(mRoute, gTrip, gTripStop, splitTrips, routeGTFS);
+	}
+
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
+		if (ALL_ROUTE_TRIPS2.containsKey(mRoute.getId())) {
+			return; // split
+		}
 		String tripHeadsignLC = gTrip.getTripHeadsign().toLowerCase(Locale.ENGLISH);
 		if (mRoute.getId() == 12l) {
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
@@ -145,10 +186,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				mTrip.setHeadsignString(BURLINGTON_GO, 1);
 				return;
 			}
-			System.out.println("Unexpected 12 trip " + gTrip);
+			System.out.printf("\nUnexpected 12 trip %s!\n", gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.getId() == 24012l) { // 12X
+		} else if (mRoute.getId() == 12l + RID_ENDS_WITH_X) { // 12X
 			if (tripHeadsignLC.endsWith(SUTTON_LC)) {
 				mTrip.setHeadsignString(SUTTON, 0);
 				return;
@@ -260,32 +301,21 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			System.out.println("Unexpected " + mRoute.getId() + " trip " + gTrip);
 			System.exit(-1);
 			return;
-		} else if (mRoute.getId() == 300l) {
-			if (gTrip.getDirectionId() == 0) { // East
-				mTrip.setHeadsignString(LA_SALLE_TOWERS, gTrip.getDirectionId());
-				return;
-			} else if (gTrip.getDirectionId() == 1) { // West
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
-				return;
-			}
-		} else if (mRoute.getId() == 301l) {
-			if (gTrip.getDirectionId() == 0) { // West
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
-				return;
-			} else if (gTrip.getDirectionId() == 1) { // East
-				mTrip.setHeadsignString(LAKESHORE_PL, gTrip.getDirectionId());
-				return;
-			}
-		} else if (mRoute.getId() == 302l) {
-			if (gTrip.getDirectionId() == 0) { // North
-				mTrip.setHeadsignString(TANSLEY_WOODS_CC, gTrip.getDirectionId());
-				return;
-			} else if (gTrip.getDirectionId() == 1) { // South
-				mTrip.setHeadsignString(SENIORS_CTR, gTrip.getDirectionId());
-				return;
-			}
 		}
 		mTrip.setHeadsignString(cleanTripHeadsign(gTrip.getTripHeadsign()), gTrip.getDirectionId());
+	}
+
+	@Override
+	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
+		if (mTrip.getRouteId() == 4l) {
+			if (mTrip.getHeadsignId() == 1l) {
+				mTrip.setHeadsignString(APPLEBY_GO, mTrip.getHeadsignId());
+				return true;
+			}
+		}
+		System.out.printf("\nUnexpected trips to merge %s and %s.\n", mTrip, mTripToMerge);
+		System.exit(-1);
+		return false;
 	}
 
 	private static final Pattern RLN_DASH_BOUNDS_TO = Pattern.compile("(^([^\\-]*\\- )+(east |west |north |south )?to )", Pattern.CASE_INSENSITIVE);
