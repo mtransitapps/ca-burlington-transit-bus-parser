@@ -166,7 +166,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				.addTripSort(MDirectionType.WEST.intValue(), //
 						Arrays.asList(new String[] { "1523", "2042", "941", "1510" })) //
 				.compileBothTripSort());
-		map2.put(302l, new RouteTripSpec(3020l, //
+		map2.put(302l, new RouteTripSpec(302l, //
 				MDirectionType.NORTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, TANSLEY_WOODS_CC, //
 				MDirectionType.SOUTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
 				.addTripSort(MDirectionType.NORTH.intValue(), //
