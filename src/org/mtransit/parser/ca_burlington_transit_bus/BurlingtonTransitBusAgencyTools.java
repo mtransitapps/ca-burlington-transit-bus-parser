@@ -1,6 +1,7 @@
 package org.mtransit.parser.ca_burlington_transit_bus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.mtransit.parser.gtfs.data.GStop;
 import org.mtransit.parser.gtfs.data.GTrip;
 import org.mtransit.parser.gtfs.data.GTripStop;
 import org.mtransit.parser.mt.data.MAgency;
+import org.mtransit.parser.mt.data.MDirectionType;
 import org.mtransit.parser.mt.data.MRoute;
 import org.mtransit.parser.mt.data.MTrip;
 import org.mtransit.parser.mt.data.MTripStop;
@@ -130,7 +132,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String _407_CARPOOL_LC = "407 carpool";
 	private static final String BURLINGTON_GO = "Burlington GO";
 	private static final String BURLINGTON_GO_LC = "burlington go";
-	// private static final String BURLINGTON = "Burlington";
+	private static final String LAKESHORE_PL = "Lakeshore Pl";
+	private static final String TANSLEY_WOODS_CC = "Tansley Woods CC";
+	private static final String SENIORS_CTR = "Seniors Ctr";
+	private static final String LA_SALLE_TOWERS = "LaSalle Towers";
 	private static final String TIM_DOBBIE_LC = "tim dobbie";
 	private static final String TIM_DOBBIE = "Tim Dobbie";
 	private static final String ALDERSHOT_GO_LC = "aldershot go";
@@ -145,6 +150,30 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static HashMap<Long, RouteTripSpec> ALL_ROUTE_TRIPS2;
 	static {
 		HashMap<Long, RouteTripSpec> map2 = new HashMap<Long, RouteTripSpec>();
+		map2.put(300l, new RouteTripSpec(300l, //
+				MDirectionType.EAST.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR, //
+				MDirectionType.WEST.intValue(), MTrip.HEADSIGN_TYPE_STRING, LA_SALLE_TOWERS) //
+				.addTripSort(MDirectionType.EAST.intValue(), //
+						Arrays.asList(new String[] { "1520", "752", "941", "1510" })) //
+				.addTripSort(MDirectionType.WEST.intValue(), //
+						Arrays.asList(new String[] { "1510", "41", "747", "1520" })) //
+				.compileBothTripSort());
+		map2.put(301l, new RouteTripSpec(301l, //
+				MDirectionType.EAST.intValue(), MTrip.HEADSIGN_TYPE_STRING, LAKESHORE_PL, //
+				MDirectionType.WEST.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
+				.addTripSort(MDirectionType.EAST.intValue(), //
+						Arrays.asList(new String[] { "1510", "52", "2041", "1523" })) //
+				.addTripSort(MDirectionType.WEST.intValue(), //
+						Arrays.asList(new String[] { "1523", "2042", "941", "1510" })) //
+				.compileBothTripSort());
+		map2.put(302l, new RouteTripSpec(3020l, //
+				MDirectionType.NORTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, TANSLEY_WOODS_CC, //
+				MDirectionType.SOUTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
+				.addTripSort(MDirectionType.NORTH.intValue(), //
+						Arrays.asList(new String[] { "1510", "52", "584", "1530" })) //
+				.addTripSort(MDirectionType.SOUTH.intValue(), //
+						Arrays.asList(new String[] { "1530", "2073", "941", "1510" })) //
+				.compileBothTripSort());
 		ALL_ROUTE_TRIPS2 = map2;
 	}
 
