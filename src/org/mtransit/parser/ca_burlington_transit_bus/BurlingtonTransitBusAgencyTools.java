@@ -336,7 +336,12 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
-		if (mTrip.getRouteId() == 4l) {
+		if (mTrip.getRouteId() == 2l) {
+			if (mTrip.getHeadsignId() == 1l) {
+				mTrip.setHeadsignString(_407_CARPOOL, mTrip.getHeadsignId());
+				return true;
+			}
+		} else if (mTrip.getRouteId() == 4l) {
 			if (mTrip.getHeadsignId() == 1l) {
 				mTrip.setHeadsignString(APPLEBY_GO, mTrip.getHeadsignId());
 				return true;
