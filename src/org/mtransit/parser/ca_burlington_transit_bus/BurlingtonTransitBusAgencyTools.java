@@ -29,8 +29,9 @@ import org.mtransit.parser.mt.data.MRoute;
 import org.mtransit.parser.mt.data.MTrip;
 import org.mtransit.parser.mt.data.MTripStop;
 
-// http://www.burlington.ca/en/services-for-you/Open-Data-Catalogue.asp
-// http://www.burlington.ca/en/services-for-you/resources/Ongoing_Projects/Open_Data/Catalogue/GTFS_Data.zip
+// http://www.burlington.ca/en/services-for-you/Open-Data.asp
+// http://cob.burlington.opendata.arcgis.com/
+// http://opendata.burlington.ca/gtfs-rt/GTFS_Data.zip
 public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	public static void main(String[] args) {
