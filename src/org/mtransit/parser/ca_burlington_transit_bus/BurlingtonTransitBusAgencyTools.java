@@ -204,12 +204,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 						Arrays.asList(new String[] { //
 						"535", // APPLEBY GO STATION
 								"505", // <>
-								// "451", // <>
 								"438", // <>
 								"421", // !=
 								"376", // !=
 								"395", // <>
-								// [29] 435, [30] 453, [31] 474,
 								"507", // <>
 								"535", // APPLEBY GO STATION
 						})) //
@@ -217,12 +215,10 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 						Arrays.asList(new String[] { //
 						"535", // APPLEBY GO STATION
 								"505", // <>
-								// "451", // <>
 								"438", // <>
 								"392", // !=
 								"397", // !=
 								"395", // <>
-								// [29] 435, [30] 453, [31] 474,
 								"507", // <>
 								"535", // APPLEBY GO STATION
 						})) //
@@ -298,11 +294,11 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 						Arrays.asList(new String[] { //
 						"1051", // SENIORS CENTRE
 								"329", // ++
-								"1057", // LAKESHORE PLACE
+								"1003", // LAKESHORE PLACE
 						})) //
 				.addTripSort(MDirectionType.WEST.intValue(), //
 						Arrays.asList(new String[] { //
-						"1057", // LAKESHORE PLACE
+						"1003", // LAKESHORE PLACE
 								"338", // ++
 								"1051", // SENIORS CENTRE
 						})) //
@@ -394,9 +390,6 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				return true;
 			}
 		}
-		if (isGoodEnoughAccepted()) {
-			return super.mergeHeadsign(mTrip, mTripToMerge);
-		}
 		System.out.printf("\nUnexpected trips to merge %s and %s.\n", mTrip, mTripToMerge);
 		System.exit(-1);
 		return false;
@@ -405,7 +398,6 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final Pattern RLN_DASH_BOUNDS_TO = Pattern.compile("(^([^\\-]*\\- )+(east |west |north |south )?)", Pattern.CASE_INSENSITIVE);
 
 	private static final Pattern STARTS_WITH_TO = Pattern.compile("(^to )", Pattern.CASE_INSENSITIVE);
-
 
 	@Override
 	public String cleanTripHeadsign(String tripHeadsign) {
