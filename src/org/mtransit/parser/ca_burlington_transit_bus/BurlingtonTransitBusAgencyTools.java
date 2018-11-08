@@ -287,18 +287,18 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 								"1052", // LA SALLE TOWERS
 						})) //
 				.compileBothTripSort());
-		map2.put(301l, new RouteTripSpec(301l, //
+		map2.put(301L, new RouteTripSpec(301L, //
 				MDirectionType.EAST.intValue(), MTrip.HEADSIGN_TYPE_STRING, LAKESHORE_PL, //
 				MDirectionType.WEST.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
 				.addTripSort(MDirectionType.EAST.intValue(), //
 						Arrays.asList(new String[] { //
 						"1051", // SENIORS CENTRE
 								"329", // ++
-								"1003", // LAKESHORE PLACE
+								"1057", // LAKESHORE PLACE
 						})) //
 				.addTripSort(MDirectionType.WEST.intValue(), //
 						Arrays.asList(new String[] { //
-						"1003", // LAKESHORE PLACE
+						"1057", // LAKESHORE PLACE
 								"338", // ++
 								"1051", // SENIORS CENTRE
 						})) //
