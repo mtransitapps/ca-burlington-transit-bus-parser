@@ -356,6 +356,9 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
+		if (MTrip.mergeEmpty(mTrip, mTripToMerge)) {
+			return true;
+		}
 		List<String> headsignsValues = Arrays.asList(mTrip.getHeadsignValue(), mTripToMerge.getHeadsignValue());
 		if (mTrip.getRouteId() == 2L) {
 			if (Arrays.asList( //
