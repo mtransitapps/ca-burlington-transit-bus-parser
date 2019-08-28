@@ -154,6 +154,20 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static HashMap<Long, RouteTripSpec> ALL_ROUTE_TRIPS2;
 	static {
 		HashMap<Long, RouteTripSpec> map2 = new HashMap<Long, RouteTripSpec>();
+		map2.put(6L, new RouteTripSpec(6L, //
+				0, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO, //
+				1, MTrip.HEADSIGN_TYPE_STRING, _407_CARPOOL) //
+				.addTripSort(0, //
+						Arrays.asList(new String[] { //
+						"615", // GO 407 CARPOOL
+								"85", // BURLINGTON GO STATION
+						})) //
+				.addTripSort(1, //
+						Arrays.asList(new String[] { //
+						"85", // BURLINGTON GO STATION
+								"615", // GO 407 CARPOOL
+						})) //
+				.compileBothTripSort());
 		map2.put(12L, new RouteTripSpec(12L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, "North Smart Ctr", //
 				1, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO) //
@@ -360,7 +374,22 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			return true;
 		}
 		List<String> headsignsValues = Arrays.asList(mTrip.getHeadsignValue(), mTripToMerge.getHeadsignValue());
-		if (mTrip.getRouteId() == 2L) {
+		if (mTrip.getRouteId() == 1L) {
+			if (Arrays.asList( //
+					BURLINGTON_GO, // <>
+					"Appleby Go" //
+			).containsAll(headsignsValues)) {
+				mTrip.setHeadsignString("Appleby Go", mTrip.getHeadsignId());
+				return true;
+			}
+			if (Arrays.asList( //
+					BURLINGTON_GO, // <>
+					"Hamilton" //
+			).containsAll(headsignsValues)) {
+				mTrip.setHeadsignString("Hamilton", mTrip.getHeadsignId());
+				return true;
+			}
+		} else if (mTrip.getRouteId() == 2L) {
 			if (Arrays.asList( //
 					CAVENDISH, //
 					_407_CARPOOL //
