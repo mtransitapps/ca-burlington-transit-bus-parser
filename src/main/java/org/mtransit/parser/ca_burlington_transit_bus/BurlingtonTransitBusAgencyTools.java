@@ -1,5 +1,6 @@
 package org.mtransit.parser.ca_burlington_transit_bus;
 
+import org.jetbrains.annotations.NotNull;
 import org.mtransit.parser.CleanUtils;
 import org.mtransit.parser.DefaultAgencyTools;
 import org.mtransit.parser.MTLog;
@@ -452,16 +453,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	}
 
 	@Override
-	public int getStopId(GStop gStop) {
-		String stopId = gStop.getStopId();
-		if (stopId.length() > 0 && Utils.isDigitsOnly(stopId)) {
-			return Integer.parseInt(stopId);
-		}
-		Matcher matcher = DIGITS.matcher(stopId);
-		if (matcher.find()) {
-			return Integer.parseInt(matcher.group());
-		}
-		MTLog.logFatal("Unexpected stop ID for %s!", gStop);
-		return -1;
+	public int getStopId(@NotNull GStop gStop) { // used for GTFS-RT
+		return super.getStopId(gStop);
 	}
 }
