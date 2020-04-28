@@ -1,17 +1,8 @@
 package org.mtransit.parser.ca_burlington_transit_bus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 import org.mtransit.parser.CleanUtils;
 import org.mtransit.parser.DefaultAgencyTools;
+import org.mtransit.parser.MTLog;
 import org.mtransit.parser.Pair;
 import org.mtransit.parser.SplitUtils;
 import org.mtransit.parser.SplitUtils.RouteTripSpec;
@@ -28,6 +19,15 @@ import org.mtransit.parser.mt.data.MDirectionType;
 import org.mtransit.parser.mt.data.MRoute;
 import org.mtransit.parser.mt.data.MTrip;
 import org.mtransit.parser.mt.data.MTripStop;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // http://www.burlington.ca/en/services-for-you/Open-Data.asp
 // http://cob.burlington.opendata.arcgis.com/
@@ -48,11 +48,11 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public void start(String[] args) {
-		System.out.printf("\nGenerating Burlington Transit bus data...");
+		MTLog.log("Generating Burlington Transit bus data...");
 		long start = System.currentTimeMillis();
-		this.serviceIds = extractUsefulServiceIds(args, this);
+		this.serviceIds = extractUsefulServiceIds(args, this, true);
 		super.start(args);
-		System.out.printf("\nGenerating Burlington Transit bus data... DONE in %s.\n", Utils.getPrettyDuration(System.currentTimeMillis() - start));
+		MTLog.log("Generating Burlington Transit bus data... DONE in %s.", Utils.getPrettyDuration(System.currentTimeMillis() - start));
 	}
 
 	@Override
@@ -95,15 +95,15 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String B = "B";
 	private static final String X = "X";
 
-	private static final long RID_ENDS_WITH_A = 1000l;
-	private static final long RID_ENDS_WITH_B = 2000l;
-	private static final long RID_ENDS_WITH_X = 24000l;
+	private static final long RID_ENDS_WITH_A = 1000L;
+	private static final long RID_ENDS_WITH_B = 2000L;
+	private static final long RID_ENDS_WITH_X = 24000L;
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
 		String routeId = gRoute.getRouteShortName();
-		if (routeId != null && routeId.length() > 0 && Utils.isDigitsOnly(routeId)) {
-			return Integer.valueOf(routeId); // using stop code as stop ID
+		if (routeId.length() > 0 && Utils.isDigitsOnly(routeId)) {
+			return Integer.parseInt(routeId); // using stop code as stop ID
 		}
 		Matcher matcher = DIGITS.matcher(routeId);
 		if (matcher.find()) {
@@ -116,9 +116,8 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				return RID_ENDS_WITH_X + digits;
 			}
 		}
-		System.out.printf("\nCan't find route ID for %s!\n", gRoute);
-		System.exit(-1);
-		return -1l;
+		MTLog.logFatal("Can't find route ID for %s!", gRoute);
+		return -1L;
 	}
 
 	@Override
@@ -152,44 +151,45 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	private static final String SOUTH = "South";
 
 	private static HashMap<Long, RouteTripSpec> ALL_ROUTE_TRIPS2;
+
 	static {
-		HashMap<Long, RouteTripSpec> map2 = new HashMap<Long, RouteTripSpec>();
+		HashMap<Long, RouteTripSpec> map2 = new HashMap<>();
 		map2.put(6L, new RouteTripSpec(6L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO, //
 				1, MTrip.HEADSIGN_TYPE_STRING, _407_CARPOOL) //
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"615", // GO 407 CARPOOL
-								"85", // BURLINGTON GO STATION
-						})) //
-				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"85", // BURLINGTON GO STATION
+						Arrays.asList(//
 								"615", // GO 407 CARPOOL
-						})) //
+								"85" // BURLINGTON GO STATION
+						)) //
+				.addTripSort(1, //
+						Arrays.asList(//
+								"85", // BURLINGTON GO STATION
+								"615" // GO 407 CARPOOL
+						)) //
 				.compileBothTripSort());
 		map2.put(12L, new RouteTripSpec(12L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, "North Smart Ctr", //
 				1, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO) //
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"85", // BURLINGTON GO STATION
-								"298", // ++
-								"965", // BURLINGTON NORTH SMARTCENTRE
-						})) //
-				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"965", // BURLINGTON NORTH SMARTCENTRE
-								"346", // ++
+						Arrays.asList(//
 								"85", // BURLINGTON GO STATION
-						})) //
+								"298", // ++
+								"965" // BURLINGTON NORTH SMARTCENTRE
+						)) //
+				.addTripSort(1, //
+						Arrays.asList(//
+								"965", // BURLINGTON NORTH SMARTCENTRE
+								"346", // ++
+								"85" // BURLINGTON GO STATION
+						)) //
 				.compileBothTripSort());
 		map2.put(15L, new RouteTripSpec(15L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, "A Appleby - Walkers", // AM
 				1, MTrip.HEADSIGN_TYPE_STRING, "B Walkers - Appleby") // PM
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"535", // <> APPLEBY GO STATION
+						Arrays.asList(//
+								"535", // <> APPLEBY GO STATION
 								"505", // <>
 								"473", // <>
 								"499", // !=
@@ -197,141 +197,141 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 								"457", // !=
 								"474", // <>
 								"507", // <>
-								"535", // <> APPLEBY GO STATION
-						})) //
+								"535" // <> APPLEBY GO STATION
+						)) //
 				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"535", // <> APPLEBY GO STATION
+						Arrays.asList(//
+								"535", // <> APPLEBY GO STATION
 								"505", // <>
 								"473", // <>
 								"439", // !=
 								"510", // !=
 								"474", // <>
 								"507", // <>
-								"535", // <> APPLEBY GO STATION
-						})) //
+								"535" // <> APPLEBY GO STATION
+						)) //
 				.compileBothTripSort());
 		map2.put(40L, new RouteTripSpec(40L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, "B Pinedale - Hampton Heath", // PM
 				1, MTrip.HEADSIGN_TYPE_STRING, "A Hampton Heath - Pinedale") // AM
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"535", // APPLEBY GO STATION
+						Arrays.asList(//
+								"535", // APPLEBY GO STATION
 								"505", // <>
 								"438", // <>
 								"421", // !=
 								"376", // !=
 								"395", // <>
 								"507", // <>
-								"535", // APPLEBY GO STATION
-						})) //
+								"535" // APPLEBY GO STATION
+						)) //
 				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"535", // APPLEBY GO STATION
+						Arrays.asList(//
+								"535", // APPLEBY GO STATION
 								"505", // <>
 								"438", // <>
 								"392", // !=
 								"397", // !=
 								"395", // <>
 								"507", // <>
-								"535", // APPLEBY GO STATION
-						})) //
+								"535" // APPLEBY GO STATION
+						)) //
 				.compileBothTripSort());
 		map2.put(50L, new RouteTripSpec(50L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, SOUTH, // LAKESHORE
 				1, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO) //
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"85", // BURLINGTON GO STATION
-								"996", // NEW AT SHANE
-								"447", // BURLOAK AT LAKESHORE
-						})) //
-				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"447", // BURLOAK AT LAKESHORE
-								"498", // ++
+						Arrays.asList(//
 								"85", // BURLINGTON GO STATION
-						})) //
+								"996", // NEW AT SHANE
+								"447" // BURLOAK AT LAKESHORE
+						)) //
+				.addTripSort(1, //
+						Arrays.asList(//
+								"447", // BURLOAK AT LAKESHORE
+								"498", // ++
+								"85" // BURLINGTON GO STATION
+						)) //
 				.compileBothTripSort());
 		map2.put(51L, new RouteTripSpec(51L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, NORTHEAST, // SUTTON
 				1, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO) //
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"85", // BURLINGTON GO STATION
-								"411", // ++
-								"872", // SUTTON AT DUNDAS
-						})) //
-				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"872", // SUTTON AT DUNDAS
-								"538", // UPPER MIDDLE AT WALKERS
+						Arrays.asList(//
 								"85", // BURLINGTON GO STATION
-						})) //
+								"411", // ++
+								"872" // SUTTON AT DUNDAS
+						)) //
+				.addTripSort(1, //
+						Arrays.asList(//
+								"872", // SUTTON AT DUNDAS
+								"538", // UPPER MIDDLE AT WALKERS
+								"85" // BURLINGTON GO STATION
+						)) //
 				.compileBothTripSort());
 		map2.put(52L, new RouteTripSpec(52L, //
 				0, MTrip.HEADSIGN_TYPE_STRING, NORTHWEST, //
 				1, MTrip.HEADSIGN_TYPE_STRING, BURLINGTON_GO) //
 				.addTripSort(0, //
-						Arrays.asList(new String[] { //
-						"85", // BURLINGTON GO STATION
-								"446", // ++
-								"299", // GUELPH AT UPPER MIDDLE
-						})) //
-				.addTripSort(1, //
-						Arrays.asList(new String[] { //
-						"299", // GUELPH AT UPPER MIDDLE
-								"32", // ++
+						Arrays.asList(//
 								"85", // BURLINGTON GO STATION
-						})) //
+								"446", // ++
+								"299" // GUELPH AT UPPER MIDDLE
+						)) //
+				.addTripSort(1, //
+						Arrays.asList(//
+								"299", // GUELPH AT UPPER MIDDLE
+								"32", // ++
+								"85" // BURLINGTON GO STATION
+						)) //
 				.compileBothTripSort());
-		map2.put(300l, new RouteTripSpec(300l, //
+		map2.put(300L, new RouteTripSpec(300L, //
 				MDirectionType.EAST.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR, //
 				MDirectionType.WEST.intValue(), MTrip.HEADSIGN_TYPE_STRING, LA_SALLE_TOWERS) //
 				.addTripSort(MDirectionType.EAST.intValue(), //
-						Arrays.asList(new String[] { //
-						"1052", // LA SALLE TOWERS
-								"748", // ++
-								"1051", // SENIORS CENTRE
-						})) //
-				.addTripSort(MDirectionType.WEST.intValue(), //
-						Arrays.asList(new String[] { //
-						"1051", // SENIORS CENTRE
-								"749", // ++
+						Arrays.asList(//
 								"1052", // LA SALLE TOWERS
-						})) //
+								"748", // ++
+								"1051" // SENIORS CENTRE
+						)) //
+				.addTripSort(MDirectionType.WEST.intValue(), //
+						Arrays.asList(//
+								"1051", // SENIORS CENTRE
+								"749", // ++
+								"1052" // LA SALLE TOWERS
+						)) //
 				.compileBothTripSort());
 		map2.put(301L, new RouteTripSpec(301L, //
 				MDirectionType.EAST.intValue(), MTrip.HEADSIGN_TYPE_STRING, LAKESHORE_PL, //
 				MDirectionType.WEST.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
 				.addTripSort(MDirectionType.EAST.intValue(), //
-						Arrays.asList(new String[] { //
-						"1051", // SENIORS CENTRE
-								"329", // ++
-								"1057", // LAKESHORE PLACE
-						})) //
-				.addTripSort(MDirectionType.WEST.intValue(), //
-						Arrays.asList(new String[] { //
-						"1057", // LAKESHORE PLACE
-								"338", // ++
+						Arrays.asList(//
 								"1051", // SENIORS CENTRE
-						})) //
+								"329", // ++
+								"1057" // LAKESHORE PLACE
+						)) //
+				.addTripSort(MDirectionType.WEST.intValue(), //
+						Arrays.asList(//
+								"1057", // LAKESHORE PLACE
+								"338", // ++
+								"1051" // SENIORS CENTRE
+						)) //
 				.compileBothTripSort());
-		map2.put(302l, new RouteTripSpec(302l, //
+		map2.put(302L, new RouteTripSpec(302L, //
 				MDirectionType.NORTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, TANSLEY_WOODS_CC, //
 				MDirectionType.SOUTH.intValue(), MTrip.HEADSIGN_TYPE_STRING, SENIORS_CTR) //
 				.addTripSort(MDirectionType.NORTH.intValue(), //
-						Arrays.asList(new String[] { //
-						"1051", // SENIORS CENTRE
-								"228", // ++
-								"1055", // TANSLEY WOODS COMMUNITY CENTRE
-						})) //
-				.addTripSort(MDirectionType.SOUTH.intValue(), //
-						Arrays.asList(new String[] { //
-						"1055", // TANSLEY WOODS COMMUNITY CENTRE
-								"272", // ++
+						Arrays.asList(//
 								"1051", // SENIORS CENTRE
-						})) //
+								"228", // ++
+								"1055" // TANSLEY WOODS COMMUNITY CENTRE
+						)) //
+				.addTripSort(MDirectionType.SOUTH.intValue(), //
+						Arrays.asList(//
+								"1055", // TANSLEY WOODS COMMUNITY CENTRE
+								"272", // ++
+								"1051" // SENIORS CENTRE
+						)) //
 				.compileBothTripSort());
 		ALL_ROUTE_TRIPS2 = map2;
 	}
@@ -393,7 +393,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			if (Arrays.asList( //
 					CAVENDISH, //
 					_407_CARPOOL //
-					).containsAll(headsignsValues)) {
+			).containsAll(headsignsValues)) {
 				mTrip.setHeadsignString(_407_CARPOOL, mTrip.getHeadsignId());
 				return true;
 			}
@@ -401,7 +401,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			if (Arrays.asList( //
 					CAVENDISH, //
 					_407_CARPOOL //
-					).containsAll(headsignsValues)) {
+			).containsAll(headsignsValues)) {
 				mTrip.setHeadsignString(_407_CARPOOL, mTrip.getHeadsignId());
 				return true;
 			}
@@ -409,7 +409,7 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 			if (Arrays.asList( //
 					"Tim Dobbie", //
 					_407_CARPOOL //
-					).containsAll(headsignsValues)) {
+			).containsAll(headsignsValues)) {
 				mTrip.setHeadsignString(_407_CARPOOL, mTrip.getHeadsignId());
 				return true;
 			}
@@ -422,23 +422,18 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 				return true;
 			}
 		}
-		System.out.printf("\nUnexpected trips to merge %s and %s.\n", mTrip, mTripToMerge);
-		System.exit(-1);
+		MTLog.logFatal("Unexpected trips to merge %s and %s.", mTrip, mTripToMerge);
 		return false;
 	}
-
-	private static final Pattern RLN_DASH_BOUNDS_TO = Pattern.compile("(^([^\\-]*\\- )+(east |west |north |south )?)", Pattern.CASE_INSENSITIVE);
-
-	private static final Pattern STARTS_WITH_TO = Pattern.compile("(^to )", Pattern.CASE_INSENSITIVE);
 
 	@Override
 	public String cleanTripHeadsign(String tripHeadsign) {
 		if (Utils.isUppercaseOnly(tripHeadsign, true, true)) {
 			tripHeadsign = tripHeadsign.toLowerCase(Locale.ENGLISH);
 		}
+		tripHeadsign = CleanUtils.keepToAndRemoveVia(tripHeadsign);
+		tripHeadsign = CleanUtils.cleanBounds(tripHeadsign);
 		tripHeadsign = CleanUtils.CLEAN_AT.matcher(tripHeadsign).replaceAll(CleanUtils.CLEAN_AT_REPLACEMENT);
-		tripHeadsign = RLN_DASH_BOUNDS_TO.matcher(tripHeadsign).replaceAll(StringUtils.EMPTY);
-		tripHeadsign = STARTS_WITH_TO.matcher(tripHeadsign).replaceAll(StringUtils.EMPTY);
 		tripHeadsign = CleanUtils.cleanStreetTypes(tripHeadsign);
 		tripHeadsign = CleanUtils.cleanNumbers(tripHeadsign);
 		return CleanUtils.cleanLabel(tripHeadsign);
@@ -459,15 +454,14 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 	@Override
 	public int getStopId(GStop gStop) {
 		String stopId = gStop.getStopId();
-		if (stopId != null && stopId.length() > 0 && Utils.isDigitsOnly(stopId)) {
-			return Integer.valueOf(stopId);
+		if (stopId.length() > 0 && Utils.isDigitsOnly(stopId)) {
+			return Integer.parseInt(stopId);
 		}
 		Matcher matcher = DIGITS.matcher(stopId);
 		if (matcher.find()) {
 			return Integer.parseInt(matcher.group());
 		}
-		System.out.printf("\nUnexpected stop ID for %s!", gStop);
-		System.exit(-1);
+		MTLog.logFatal("Unexpected stop ID for %s!", gStop);
 		return -1;
 	}
 }
