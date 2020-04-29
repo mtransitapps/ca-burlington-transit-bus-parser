@@ -30,8 +30,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// http://www.burlington.ca/en/services-for-you/Open-Data.asp
-// http://cob.burlington.opendata.arcgis.com/
+// https://navburl-burlington.opendata.arcgis.com/pages/data
+// https://navburl-burlington.opendata.arcgis.com/search?tags=Transportation
+// https://navburl-burlington.opendata.arcgis.com/datasets/transit-schedule-data-gtfs
+// http://opendata.burlington.ca/gtfs-rt/
 // http://opendata.burlington.ca/gtfs-rt/GTFS_Data.zip
 public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
