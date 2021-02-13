@@ -117,14 +117,8 @@ public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	@NotNull
 	@Override
-	public String getRouteLongName(@NotNull GRoute gRoute) {
-		return cleanRouteLongName(super.getRouteLongName(gRoute));
-	}
-
-	private String cleanRouteLongName(String routeLongName) {
-		if (Utils.isUppercaseOnly(routeLongName, true, true)) {
-			routeLongName = routeLongName.toLowerCase(Locale.ENGLISH);
-		}
+	public String cleanRouteLongName(@NotNull String routeLongName) {
+		routeLongName = CleanUtils.toLowerCaseUpperCaseWords(Locale.ENGLISH, routeLongName, getIgnoredWords());
 		return CleanUtils.cleanLabel(routeLongName);
 	}
 
