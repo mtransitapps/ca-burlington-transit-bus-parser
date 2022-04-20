@@ -8,11 +8,8 @@ import org.mtransit.parser.mt.data.MAgency;
 
 import java.util.Locale;
 
-// https://navburl-burlington.opendata.arcgis.com/pages/data
-// https://navburl-burlington.opendata.arcgis.com/search?tags=Transportation
-// https://navburl-burlington.opendata.arcgis.com/datasets/transit-schedule-data-gtfs
-// http://opendata.burlington.ca/gtfs-rt/
-// http://opendata.burlington.ca/gtfs-rt/GTFS_Data.zip
+// https://navburl-burlington.opendata.arcgis.com/documents/Burlington::transit-schedule-data-gtfs/explore
+// https://opendata.burlington.ca/gtfs-rt/
 public class BurlingtonTransitBusAgencyTools extends DefaultAgencyTools {
 
 	public static void main(@NotNull String[] args) {
